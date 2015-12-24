@@ -2,6 +2,7 @@ package thoughtfactory
 import (
 	"fmt"
 	"strconv"
+	"teamscorebot/slackapi"
 )
 
 func init() {
@@ -15,6 +16,13 @@ type ScoreThought struct {
 }
 
 func (s *ScoreThought) Process() string {
+/*	user, err := slackapi.Client.GetUserInfo(s.SlackEv.User)
+	if err != nil {
+		fmt.Println("Issue determining user for score.")
+	}
+
+	fmt.Println(user.RealName)*/
+
 	sym := ""
 	amt, err :=  strconv.Atoi(s.Results["amount"])
 	if err != nil {

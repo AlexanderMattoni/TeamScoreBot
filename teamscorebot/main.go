@@ -5,13 +5,11 @@ import (
 	"github.com/nlopes/slack"
 	"teamscorebot/thoughtfactory"
 	"teamscorebot/monologue"
+	"teamscorebot/slackapi"
 )
 
 func main() {
-	api := slack.New("xoxb-17294767315-UQPhtIpjeODry9uqssYpB3k0")
-	api.SetDebug(false)
-
-	rtm := api.NewRTM()
+	rtm := slackapi.Client.NewRTM()
 	go rtm.ManageConnection()
 
 	Loop:
@@ -26,7 +24,7 @@ func main() {
 				monologue.Output(fmt.Sprintf("Oh, someone new! I'm talking with %d coders!", ev.ConnectionCount))
 
 			case *slack.MessageEvent:
-				thought := thoughtfactory.ThinkAbout(ev.Text);
+				thought := thoughtfactory.ThinkAbout(ev);
 				rtm.SendMessage(rtm.NewOutgoingMessage(thought.Process(), ev.Channel))
 
 			case *slack.RTMError:
@@ -37,6 +35,7 @@ func main() {
 				break Loop
 
 			default:
+
 			}
 		}
 	}
