@@ -1,21 +1,23 @@
-package thoughtfactory
+package score
 import (
 	"fmt"
 	"strconv"
 	"teamscorebot/slackapi"
+	"teamscorebot/thoughtfactory/types"
+	"teamscorebot/thoughtfactory"
 )
 
 func init() {
 	s := &ScoreThought{};
 	s.RegExLiteral = `^(?P<symbol>\+|\-)(?P<amount>[\d]+) points (to|from) (?P<team>[a-zA-Z]+)`
-	thoughts = append(thoughts, s)
+	thoughtfactory.RegisterThought(s)
 }
 
 type ScoreThought struct {
-	Thought
+	types.SentenceThought
 }
 
-func (s *ScoreThought) Process() string {
+func (s *ScoreThought) Process() {
 /*	user, err := slackapi.Client.GetUserInfo(s.SlackEv.User)
 	if err != nil {
 		fmt.Println("Issue determining user for score.")
@@ -40,5 +42,12 @@ func (s *ScoreThought) Process() string {
 		tofro = "from"
 	}
 
-	return fmt.Sprintf("%s %d points %s %s", sym, amt, tofro, team)
+	fmt.Printf("%s %d points %s %s", sym, amt, tofro, team)
+
+	slackapi.SlackStream.SendMessage(
+		slackapi.SlackStream.NewOutgoingMessage(
+			fmt.Sprintf("%s %d points %s %s", sym, amt, tofro, team),
+			s.SlackEv.Channel,
+		),
+	)
 }
